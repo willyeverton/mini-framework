@@ -1,10 +1,21 @@
-Route: / Controller: indexController Action:index View: index.phtml
-<br/>
-<?php //echo var_dump($this->views->listUsers)?><!--<!--;-->-->
-<?php foreach ($this->views->listUsers as $user): ?>
-    <hr><?php echo $user['id']?></hr>
-    <hr><?php echo $user['name']?></hr>
-    <hr><?php echo $user['email']?></hr>
-<?php endforeach?>
-
-
+<div class="card-header">Dashboard</div>
+<div class="card-body">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nome</th>
+                <th scope="col">E-mail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->views->listUsers as $user): ?>
+                <tr>
+                    <th scope="row"><?= $user['id']?></th>
+                    <td><?= $user['name']?></td>
+                    <td><?= $user['email']?></td>
+                </tr>
+            <?php endforeach?>
+        </tbody>
+    </table>
+</div>

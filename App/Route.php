@@ -1,8 +1,8 @@
 <?php
-namespace App;
-use SON\Init\Bootstrap;
 
-class Route extends Bootstrap
+namespace App;
+
+class Route extends App
 {
     protected function initRoutes()
     {
@@ -11,6 +11,4 @@ class Route extends Bootstrap
 
         $this->setRoutes($routes);
     }
-
-
 }

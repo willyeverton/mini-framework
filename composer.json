@@ -1,17 +1,19 @@
 {
-  "name" :"son/mvc",
+  "name" :"willyeverton/mini-framework",
+  "description": "A mini framework MVC in PHP",
+  "keywords": ["mini", "framework", "mvc", "php"],
+  "license": "ISC",
+  "authors":[
+    {
+      "name":"Willy Everton S. Nascimento",
+      "email":"willy.everton.s.nascimento@gmail.com"
+    }
+  ],
   "require" :{
     "php":">=5.6"
   },
-  "authors":[
-    {
-      "name":"Thiago Almeida",
-      "email":"ts.analista@gmail.com"
-    }
-  ],
   "autoload" : {
     "psr-4" :{
-      "SON\\":"vendor/SON/",
       "App\\":"App/"
     }
   }

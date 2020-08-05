@@ -1,13 +1,13 @@
 <?php
 
-
 namespace App\Models;
 
-
-use SON\Model\Table;
-
-class User extends Table
+class User extends Model
 {
-protected $table = "user";
+    protected $table = "users";
 
+    public function __construct()
+    {
+        parent::__construct($this->table);
+    }
 }

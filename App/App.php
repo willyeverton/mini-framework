@@ -1,26 +1,18 @@
 <?php
 
+namespace App;
 
-namespace SON\Init;
-
-
-abstract class Bootstrap
+abstract class App
 {
     private $routes;
 
-    function __construct()
+    public function __construct()
     {
         $this->initRoutes();
         $this->run($this->getUrl());
     }
 
     abstract protected function initRoutes();
-//    {
-////        $routes['home'] = array("route" => '/', "controller" => "indexController", "action" => "index");
-////        $routes['contact'] = array("route" => '/contact', "controller" => "indexController", "action" => "contact");
-//
-////        $this->setRoutes($routes);
-//    }
 
     protected function run($url)
     {
@@ -39,7 +31,7 @@ abstract class Bootstrap
         $this->routes = $routes;
     }
 
-    protected  function getUrl()
+    public function getUrl()
     {
         return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     }
