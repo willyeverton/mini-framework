@@ -16,12 +16,11 @@ class Model
         $this->table = $table;
 
         $this->db = new \PDO(
-            $this->driver.
-            ':host='. $this->host.
-            ':'. $this->port.
-            ';dbname='. $this->dbname,
-            "root",
-            "");
+            "$this->driver:
+            host=$this->host:
+            $this->port;
+            dbname=$this->dbname",
+            "root", "");
     }
 
     public function fetchAll()
