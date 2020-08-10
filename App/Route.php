@@ -4,11 +4,11 @@ namespace App;
 
 class Route extends App
 {
-    protected function initRoutes()
+    protected function setRoutes()
     {
-        $routes['home'] = array("route" => '/', "controller" => "indexController", "action" => "index");
-        $routes['contact'] = array("route" => '/contact', "controller" => "indexController", "action" => "contact");
-
-        $this->setRoutes($routes);
+        $this->routes[] = array("method" => "get",  "route" => '/', "controller" => "HomeController", "action" => "home");
+        $this->routes[] = array("method" => "get",  "route" => '/login', "controller" => "LoginController", "action" => "index");
+        $this->routes[] = array("method" => "post", "route" => '/login', "controller" => "LoginController", "action" => "login");
+        $this->routes[] = array("method" => "get", "route" => '/dashboard', "controller" => "DashboardController", "action" => "dashboard");
     }
 }

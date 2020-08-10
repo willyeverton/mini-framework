@@ -4,35 +4,45 @@ namespace App;
 
 abstract class App
 {
-    private $routes;
+    protected $routes;
 
     public function __construct()
     {
-        $this->initRoutes();
-        $this->run($this->getUrl());
+        $this->setRoutes();
     }
 
-    abstract protected function initRoutes();
+    abstract protected function setRoutes();
 
-    protected function run($url)
+    public function run()
     {
-        array_walk($this->routes,function ($route) use ($url){
-            if ($url== $route['route']){
-                $class = "App\\Controllers\\".ucfirst($route['controller']);
-                $controller = new $class;
+        array_walk($this->routes, function ($route) {
+
+            $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $method = strtolower($_SERVER["REQUEST_METHOD"]);
+
+            if (($url == $route['route'])
+                && ($method == $route['method'])) {
+
+                $this->validateTokenCSRF();
+
+                $controller = "App\\Controllers\\{$route['controller']}";
                 $action = $route['action'];
-                $controller->$action();
+
+                $controller = new $controller();
+                $controller->$action($_GET ?? $_POST);
             }
         });
     }
 
-    protected  function setRoutes(array $routes)
+    private function validateTokenCSRF()
     {
-        $this->routes = $routes;
-    }
+        if($_POST) {
+            session_start();
 
-    public function getUrl()
-    {
-        return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            if ($_SESSION['csrf_token'] != $_POST['csrf_token'])
+                throw new \Exception('csrf_token invalid');
+            else
+                unset($_POST['csrf_token']);
+        }
     }
 }

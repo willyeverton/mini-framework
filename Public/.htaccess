@@ -8,4 +8,4 @@ RewriteRule ^.*$ index.php [NC,L]
 # Apache (.htaccess or httpd.conf)
 #RewriteEngine On
 #RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteRule . /index.php [L]
+#RewriteRule . /home.php [L]

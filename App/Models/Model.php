@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
-class Model
+abstract class Model
 {
-    private $table;
+    protected $table;
+    protected $fillable;
+
     private $db;
     private $driver = "mysql";
     private $host   = "127.0.0.1";
     private $port   = "3306";
     private $dbname = "default";
 
-    public function __construct($table)
+    public function __construct()
     {
-        $this->table = $table;
-
         $this->db = new \PDO(
             "$this->driver:
             host=$this->host:
@@ -40,8 +40,34 @@ class Model
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function findByWhere(array $where)
+    {
+        $query = "SELECT * FROM $this->table WHERE ";
+
+        foreach ($where as $field => $value) {
+            $query .= "$field = $value AND ";
+        }
+        $query = rtrim($query, "AND ");
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    private function checkFillable(array $params){
+
+        $diff = array_diff_key($params, $this->fillable);
+        if($diff) {
+            $diff = implode(',', array_keys($diff));
+            throw new \Exception("$diff not is fillable");
+        }
+    }
+
     public function insert(array $params)
     {
+        $this->checkFillable($params);
+
         $query = sprintf(
             "INSERT INTO $this->table (%s) VALUES (%s)",
             implode(', ', array_keys($params)),
@@ -57,6 +83,8 @@ class Model
 
     public function update($id, array $params)
     {
+        $this->checkFillable($params);
+
         $values = '';
         $query = "UPDATE $this->table SET %s WHERE id = :id";
 

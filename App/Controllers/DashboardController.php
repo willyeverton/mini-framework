@@ -4,15 +4,16 @@ namespace App\Controllers;
 
 use App\Models\User;
 
-class IndexController extends Controller
+class DashboardController extends Controller
 {
-    public function Index()
+    public function dashboard()
     {
+        $this->setActionPublic();
         $user = new User();
         // atributo criado dinamicamente.
         $this->views->listUsers = $user->fetchAll();
 
-        $this->render("index");
+        $this->render('dashboard');
     }
 
 }
