@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Helpers\Session;
+use stdClass;
+
 abstract class Controller
 {
     protected $views;
@@ -11,7 +14,7 @@ abstract class Controller
     public function __construct()
     {
         // stdClass permite criar atributos pra classes em tempo de exeção
-        $this->views = new \stdClass;
+        $this->views = new stdClass;
     }
 
     protected function render($action, $layout = 'layout')
@@ -19,41 +22,51 @@ abstract class Controller
         if($this->type == 'private')
             $this->validateLogin();
 
-        $this->views->csrf_token = $this->generateTokenCSRF();
+        @$this->views->csrf_token = $this->generateTokenCSRF();    
 
         $this->action = $action;
-        if (file_exists("../App/Views/$layout.phtml")){
-            include_once "../App/Views/$layout.phtml";
-        }else{
+        if (file_exists("../App/Views/layout/$layout.phtml")){
+            include_once "../App/Views/layout/$layout.phtml";
+        } else {
             $this->content();
         }
     }
 
-    private function content()
+    public function content()
     {
         $current = get_class($this);
         $singleClassName = strtolower((str_replace("Controller", "", str_replace("App\\Controllers\\", "", $current))));
         include_once "../App/Views/".$singleClassName."/".$this->action.".phtml";
     }
 
+    protected function redirect($route)
+    {
+        header("Location:$route");
+    }
+
     private function validateLogin() {
-        session_start();
+        Session::start();
         $name = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
 
         if(!$_SESSION['user_logged'] || $_SESSION['session_name'] != $name){
-            header("Location:/login");
+            $this->redirect("/login");
         }
     }
 
     private function generateTokenCSRF()
     {
-        session_start();
-        $_SESSION['csrf_token'] = md5(rand());
+        Session::start();
+        $_SESSION['csrf_token'] = '6e7ec13f84277e76daf22cc36a0014ef';//md5(rand());
 
         return $_SESSION['csrf_token'];
     }
 
     protected function setActionPublic(){
         $this->type = 'public';
+    }
+
+    protected function isRequestPost()
+    {
+        return !empty($_POST);
     }
 }

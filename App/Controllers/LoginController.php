@@ -2,36 +2,32 @@
 
 namespace App\Controllers;
 
-
+use App\Helpers\Session;
 use App\Models\User;
 
 class LoginController extends Controller
 {
-    public function index()
+    public function login($request)
     {
+        return json_encode($request);
         $this->setActionPublic();
+
+        if($this->isRequestPost())
+        {
+            $user = new User();
+            $response = $user->findByWhere($request);
+            
+            if($response) {
+                $this->setSessionLogged();
+                return $this->redirect("/dashboard");
+            } 
+            $this->views->message = "Usuario e/ou Senha Incorreto(s)";
+        }
         $this->render("login", '');
     }
 
-    public function login($request)
-    {
-        $this->setActionPublic();
-        $user = new User();
-        $response = $user->findByWhere($request);
-        var_dump($response);
-
-        if($response)
-            $this->setSessionLogged();
-    }
-
     private function setSessionLogged() {
-        session_cache_expire(60 * 8);// 8 horas
-        session_start();
-
-        $name = md5('seg'.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
-        session_name($name);
-
-        $_SESSION['session_name'] = $name;
+        Session::start();
         $_SESSION['user_logged'] = true;
     }
 }

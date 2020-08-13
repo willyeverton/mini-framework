@@ -25,7 +25,14 @@
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <?php if(isset($this->views->message)): ?>
+        <div id="message" class="alert alert-danger" role="alert">
+            <?= $this->views->message ?>
+        </div>
+    <?php endif; ?>
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
 </form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"> </script>
+<script src="js/login.js"></script>
 </body>
 </html>

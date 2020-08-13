@@ -45,7 +45,7 @@ abstract class Model
         $query = "SELECT * FROM $this->table WHERE ";
 
         foreach ($where as $field => $value) {
-            $query .= "$field = $value AND ";
+            $query .= "$field = '$value' AND ";
         }
         $query = rtrim($query, "AND ");
 
