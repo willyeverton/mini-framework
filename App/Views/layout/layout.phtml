@@ -21,7 +21,7 @@
         <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
-            <a class="nav-link" href="">Sair</a>
+            <a class="nav-link" id="btn-exit" href="">Sair</a>
             </li>
         </ul>
     </nav>'
@@ -31,43 +31,43 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/dashboard">
                                 <i class="fa fa-home"></i>
                                 Inicio
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/user">
                                 <i class="fa fa-user-circle"></i>
                                 Usuarios
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/item">
                                 <i class="fas fa-box-open"></i>
                                 Itens
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/saller">
                                 <i class="fas fa-user-tie"></i>
                                 Vendedores
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/customer">
                                 <i class="fa fa-id-card"></i>
                                 Clientes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/order">
                                 <i class="fa fa-tasks"></i>
                                 Venda
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/payment">
                                 <i class="fas fa-money-check-alt"></i>
                                 Formas de Pagamento
                             </a>
@@ -77,12 +77,23 @@
             </nav>
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <?php echo $this->content()?>
-                            </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <?php echo $this->content()?>
+                            <nav aria-label="Navegação de página exemplo">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Próximo</a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -94,5 +105,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"> </script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

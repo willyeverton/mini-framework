@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Helpers\Session;
+
 abstract class App
 {
     protected $routes;
@@ -9,6 +11,7 @@ abstract class App
     public function __construct()
     {
         $this->setRoutes();
+        Session::config();
     }
 
     abstract protected function setRoutes();
@@ -23,26 +26,40 @@ abstract class App
             if (($url == $route['route'])
                 && ($method == $route['method'])) {
 
-                $this->validateTokenCSRF();
+                $request = $this->getRequest();
+                $this->validateTokenCSRF($request);
 
                 $controller = "App\\Controllers\\{$route['controller']}";
                 $action = $route['action'];
 
                 $controller = new $controller();
-                $controller->$action($_GET ?? $_POST);
+                $controller->$action($request);
             }
         });
     }
 
-    private function validateTokenCSRF()
+    private function validateTokenCSRF(& $request)
     {
-        if($_POST) {
-            session_start();
+        if(isset($request['csrf_token'])) {
+            Session::start();
 
-            if ($_SESSION['csrf_token'] != $_POST['csrf_token'])
+            if ($_SESSION['csrf_token'] != $request['csrf_token'])
                 throw new \Exception('csrf_token invalid');
             else
-                unset($_POST['csrf_token']);
+                unset($request['csrf_token']);
         }
     }
+
+    private function getRequest() {
+        switch ($_SERVER["REQUEST_METHOD"]){
+            case 'GET':
+                return $_GET;
+            case 'POST':
+                return $_POST;
+            default : // PUT, DELETE
+                return json_decode(file_get_contents("php://input"), true);
+        }
+
+    }
+
 }
