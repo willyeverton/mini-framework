@@ -28,13 +28,14 @@ abstract class App
             if (($url == $route['route'])
                 && ($method == $route['method'])) {
 
-                $this->validateTokenCSRF();
+                $request = $this->getRequest();
+                $this->validateTokenCSRF($request);
 
                 $controller = "App\\Controllers\\{$route['controller']}";
                 $action = $route['action'];
 
                 $controller = new $controller();
-                $controller->$action($_POST ?? $_GET);
+                $controller->$action($request);
             }
         });
     }
@@ -53,15 +54,15 @@ abstract class App
         }
     }
 
-    private function validateTokenCSRF()
+    private function validateTokenCSRF(& $request)
     {
-        if($_POST) {
+        if(isset($request['csrf_token'])) {
             Session::start();
 
-            if ($_SESSION['csrf_token'] != $_POST['csrf_token'])
+            if ($_SESSION['csrf_token'] != $request['csrf_token'])
                 throw new \Exception('csrf_token invalid');
             else
-                unset($_POST['csrf_token']);
+                unset($request['csrf_token']);
         }
     }
 }

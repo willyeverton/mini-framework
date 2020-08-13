@@ -1,6 +1,6 @@
 
-    $(document).ready(() => {
-        setTimeout(() => {
-            $('#message').fadeOut();
-        }, 5000);
-    });
+$(document).ready(() => {
+    setTimeout(function () {
+        $('.alert').fadeOut();
+    }, 5000)
+});

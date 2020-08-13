@@ -7,6 +7,10 @@ abstract class Model
     protected $table;
     protected $fillable;
 
+    private $select;
+    private $where = '';
+    private $join = '';
+
     private $db;
     private $driver = "mysql";
     private $host   = "127.0.0.1";
@@ -23,89 +27,147 @@ abstract class Model
             "root", "");
     }
 
-    public function fetchAll()
+    public static function fetchAll()
     {
-        $query = "SELECT * FROM $this->table";
-        return $this->db->query($query);
+        $model = new static();
+
+        $query = "SELECT * FROM $model->table";
+        return $model->db->query($query);
     }
 
-    public function find($id)
+    public static function find(int $id)
     {
-        $query = "SELECT * FROM $this->table WHERE id=:id";
+        $model = new static();
+        $query = "SELECT * FROM $model->table WHERE id=:id";
 
-        $stmt = $this->db->prepare($query);
+        $stmt = $model->db->prepare($query);
         $stmt->bindParam(":id",$id);
 
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function findByWhere(array $where)
+    public function select(array $fields = null)
     {
-        $query = "SELECT * FROM $this->table WHERE ";
+        $fields = $fields ?? $this->fillable;
 
-        foreach ($where as $field => $value) {
-            $query .= "$field = '$value' AND ";
+        $this->select = "SELECT ". implode(', ', array_values($fields));
+        $this->select = rtrim($this->select, ", ");
+        $this->select .= " FROM $this->table ";
+
+        return $this;
+    }
+
+    public function join(string $table, string $on, string $join = 'INNER')
+    {
+        $this->join = "$join JOIN $table ON $on ";
+
+        return $this;
+    }
+
+    public function where(array $fields, string $condition = '=', string $operator = 'AND')
+    {
+        $operator = strtoupper($operator);
+
+        if(empty($this->where))
+            $this->where = 'WHERE ';
+
+        foreach ($fields as $field => $value) {
+
+            if($this->where != 'WHERE ')
+                $this->where .= "$operator ";
+
+            if(is_string($value))
+                $this->where .= "$field $condition '$value' ";
+            else
+                $this->where .= "$field $condition $value ";
         }
-        $query = rtrim($query, "AND ");
 
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
+        return $this;
+    }
 
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    public function get()
+    {
+        try {
+            if(empty($this->select))
+                $this->select();
+
+            $query = $this->select . $this->join . $this->where;
+
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        } catch (\PDOException $ex) {
+            throw new \Exception($ex->getMessage());
+        }
     }
 
     private function checkFillable(array $params){
 
-        $diff = array_diff_key($params, $this->fillable);
+        $diff = array_diff_key($params, array_flip($this->fillable));
         if($diff) {
             $diff = implode(',', array_keys($diff));
             throw new \Exception("$diff not is fillable");
         }
     }
 
-    public function insert(array $params)
+    public static function insert(array $params)
     {
-        $this->checkFillable($params);
+        try {
+            $model = new static();
+            $model->checkFillable($params);
 
-        $query = sprintf(
-            "INSERT INTO $this->table (%s) VALUES (%s)",
-            implode(', ', array_keys($params)),
-            ':' . implode(', :', array_keys($params))
-        );
-        $stmt = $this->db->prepare($query);
-        foreach ($params as $field => $value) {
-            $stmt->bindParam(":$field", $value);
+            $query = sprintf(
+                "INSERT INTO $model->table (%s) VALUES (%s)",
+                implode(', ', array_keys($params)),
+                ':' . implode(', :', array_keys($params))
+            );
+            $stmt = $model->db->prepare($query);
+            foreach ($params as $field => $value) {
+                $stmt->bindParam(":$field", $value);
+            }
+            $stmt->execute();
+            return $model->db->lastInsertId();
+
+        } catch (\PDOException $ex) {
+           throw new \Exception($ex->getMessage());
         }
-        $stmt->execute();
-        return $this->db->lastInsertId();
     }
 
-    public function update($id, array $params)
+    public static function update(int $id, array $params)
     {
-        $this->checkFillable($params);
+        try {
+            $model = new static();
+            $model->checkFillable($params);
 
-        $values = '';
-        $query = "UPDATE $this->table SET %s WHERE id = :id";
+            $values = '';
+            $query = "UPDATE $model->table SET %s WHERE id = :id";
 
-        foreach ($params as $field => $value) {
-            $values .= "$field = $value, ";
+            foreach ($params as $field => $value) {
+                $values .= "$field = $value, ";
+            }
+            $values = rtrim($values, ", ");
+            $query = sprintf($query, $values);
+
+            $stmt = $model->db->prepare($query);
+            $stmt->bindParam(":id",$id);
+
+            $stmt->execute();
+            return $stmt->rowCount();
+
+        } catch (\PDOException $ex) {
+            throw new \Exception($ex->getMessage());
         }
-        $values = rtrim($values, ", ");
-        $query = sprintf($query, $values);
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id",$id);
-
-        $stmt->execute();
-        return $stmt->rowCount();
     }
 
-    public function delete($id)
+    public static function delete(int $id)
     {
-        $query = "DELETE FROM $this->table WHERE id = :id";
+        $model = new static();
+        $query = "DELETE FROM $model->table WHERE id = :id";
 
-        $stmt = $this->db->prepare($query);
+        $stmt = $model->db->prepare($query);
         $stmt->bindParam(":id",$id);
 
         $stmt->execute();

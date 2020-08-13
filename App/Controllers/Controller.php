@@ -21,8 +21,8 @@ abstract class Controller
     {
         if($this->type == 'private')
             $this->validateLogin();
-
-        @$this->views->csrf_token = $this->generateTokenCSRF();    
+ 
+        @ $this->views->csrf_token = $this->generateTokenCSRF();
 
         $this->action = $action;
         if (file_exists("../App/Views/layout/$layout.phtml")){
@@ -61,12 +61,11 @@ abstract class Controller
         return $_SESSION['csrf_token'];
     }
 
-    protected function setActionPublic(){
+    protected function setActionPublic() {
         $this->type = 'public';
     }
 
-    protected function isRequestPost()
-    {
-        return !empty($_POST);
+    protected function isRequestGet() {
+        return $_SERVER["REQUEST_METHOD"] == "GET";
     }
 }

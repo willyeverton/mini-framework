@@ -7,26 +7,35 @@ use App\Models\User;
 
 class LoginController extends Controller
 {
+
     public function login($request)
     {
-        return json_encode($request);
         $this->setActionPublic();
 
-        if($this->isRequestPost())
-        {
-            $user = new User();
-            $response = $user->findByWhere($request);
-            
+        if(!$this->isRequestGet()) {
+
+            $request['password'] = md5($request['password']);
+
+            $response = (new User)->where($request)->get();
+
             if($response) {
                 $this->setSessionLogged();
-                return $this->redirect("/dashboard");
-            } 
-            $this->views->message = "Usuario e/ou Senha Incorreto(s)";
+                $this->redirect("/dashboard");
+            } else {
+                @ $this->views->message = "E-mail ou Senha Incorreto!";
+            }
         }
         $this->render("login", '');
     }
 
+    public function logout() {
+
+        Session::destroy();
+        $this->redirect("/dashboard");
+    }
+
     private function setSessionLogged() {
+
         Session::start();
         $_SESSION['user_logged'] = true;
     }
