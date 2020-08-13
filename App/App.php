@@ -18,8 +18,6 @@ abstract class App
 
     public function run()
     {
-        return file_get_contents("php://input");
-
         array_walk($this->routes, function ($route) {
 
             $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

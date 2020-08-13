@@ -106,3 +106,7 @@ body {
     padding: .0rem!important;
     align-self: flex-end;
   }
+
+  .table-striped {
+    margin-bottom: 0px;
+  }
