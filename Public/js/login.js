@@ -1,6 +1,8 @@
+window.$ = require('jquery');
+require('bootstrap');
 
-$(document).ready(() => {
-    setTimeout(function () {
+window.onload = () => {
+        setTimeout(function () {
         $('.alert').fadeOut();
     }, 5000)
-});
+};

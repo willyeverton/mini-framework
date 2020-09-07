@@ -27,23 +27,71 @@ abstract class Model
             "root", "");
     }
 
-    public static function fetchAll()
+    public static function all()
     {
         $model = new static();
+        $stmt = $model->db->query("SELECT * FROM $model->table");
 
-        $query = "SELECT * FROM $model->table";
-        return $model->db->query($query);
+        $array = array();
+        while ($object = $stmt->fetchObject(static::class)) {
+            $array[] = $object;
+        }
+        return $array;
+    }
+
+    public static function paginate($pagina, $qty = 20, $maxPages = 5)
+    {
+        if(empty($pagina))
+            $pagina = 1;
+
+        $model = new static();
+
+        //multiplicamos a quantidade de registros da pagina pelo valor da pagina atual
+        $inicio = ($pagina - 1) * $qty ;
+
+        $stmt = $model->db->prepare("SELECT * FROM $model->table ORDER BY id DESC LIMIT $inicio, $qty");
+        $stmt->execute();
+
+        $result = $model->count();
+        $route = $model->getRequestRoute() ."?page=";
+
+        $result->maxPages = $maxPages;
+        $result->qty      = $qty;
+        $result->page     = $pagina;
+        $result->pages    = ceil($result->total / $qty);
+        $result->first    = $route . "1";
+        $result->previous = $route . ($pagina - 1);
+        $result->current  = $route . $pagina;
+        $result->next     = $route . ($pagina + 1);
+        $result->last     = $route . $result->pages;
+
+        while ($object = $stmt->fetchObject(static::class)) {
+            $result->data = [$object];
+        }
+        return $result;
+    }
+
+    private function getRequestRoute() {
+        return strstr($_SERVER['REQUEST_URI'], '?', true);
+    }
+
+    private function count()
+    {
+        $model = new static();
+        $stmt = $model->db->prepare("SELECT COUNT(*) AS 'total' FROM $model->table");
+
+        $stmt->execute();
+        return $stmt->fetchObject();
     }
 
     public static function find(int $id)
     {
         $model = new static();
-        $query = "SELECT * FROM $model->table WHERE id=:id";
+        $stmt = $model->db->prepare("SELECT * FROM $model->table WHERE id=:id");
 
-        $stmt = $model->db->prepare($query);
         $stmt->bindParam(":id",$id);
-
         $stmt->execute();
+
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 

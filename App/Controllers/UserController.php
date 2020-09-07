@@ -6,11 +6,16 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function list()
+    public function list($get)
     {
-        // atributo criado dinamicamente.
-        $this->views->users = User::fetchAll();
+        try {
+            // atributo criado dinamicamente.
+            $this->view->pagination = User::paginate($get['page'] ?? 1);
 
-        $this->render('list');
+            $this->render('list');
+
+        } catch (\Throwable $throwable) {
+            $this->render('list', $throwable->getMessage());
+        }
     }
 }

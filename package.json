@@ -1,22 +1,14 @@
 {
   "name": "mini-framework",
-  "version": "1.0.0",
-  "description": "Mini Framework MVC PHP com Rotas",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "test"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/willyeverton/mini-framework.git"
   },
-  "keywords": [
-    "mini",
-    "framework",
-    "mvc",
-    "php",
-    "rotas"
-  ],
   "author": "Willy Everton S. Nascimento",
   "license": "ISC",
   "bugs": {
@@ -24,8 +16,20 @@
   },
   "homepage": "https://github.com/willyeverton/mini-framework#readme",
   "dependencies": {
-    "autoprefixer": "^9.8.6",
     "bootstrap": "^4.5.2",
-    "postcss-cli": "^7.1.1"
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.8.6",
+    "css-loader": "^4.2.1",
+    "file-loader": "^6.0.0",
+    "node-sass": "^4.14.1",
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.3",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }

@@ -9,7 +9,7 @@ class DashboardController extends Controller
     public function dashboard()
     {
         // atributo criado dinamicamente.
-        $this->views->listUsers = User::fetchAll();
+        $this->view->listUsers = User::all();
 
         $this->render('dashboard');
     }

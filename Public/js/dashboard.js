@@ -1,6 +1,5 @@
-$(document).ready(() => {
-    $('#btn-exit').on('click', (e) => {
+
+     $('#btn-exit').on('click', (e) => {
         //e.preventDefault();
 
     });
-});

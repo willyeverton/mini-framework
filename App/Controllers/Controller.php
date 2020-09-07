@@ -7,22 +7,23 @@ use stdClass;
 
 abstract class Controller
 {
-    protected $views;
+    protected $view;
     private $type = 'private';
     private $action;
 
     public function __construct()
     {
         // stdClass permite criar atributos pra classes em tempo de exeção
-        $this->views = new stdClass;
+        $this->view = new stdClass;
     }
 
-    protected function render($action, $layout = 'layout')
+    protected function render($action, $layout = 'layout', $message = '', $type = 'danger')
     {
         if($this->type == 'private')
             $this->validateLogin();
- 
-        @ $this->views->csrf_token = $this->generateTokenCSRF();
+
+        $this->setDefaultVars();
+        $this->alert($message, $type);
 
         $this->action = $action;
         if (file_exists("../App/Views/layout/$layout.phtml")){
@@ -32,11 +33,27 @@ abstract class Controller
         }
     }
 
+    private function alert($message, $type)
+    {
+        $this->view->message = $message ?? '';
+        $this->view->type    = $type ?? '';
+    }
+
+    private function setDefaultVars()
+    {
+        $this->view->csrf_token = $this->generateTokenCSRF();
+    }
+
     public function content()
     {
         $current = get_class($this);
         $singleClassName = strtolower((str_replace("Controller", "", str_replace("App\\Controllers\\", "", $current))));
         include_once "../App/Views/".$singleClassName."/".$this->action.".phtml";
+    }
+
+    public function pagination($pagination = 'pagination')
+    {
+        include_once "../App/Views/layout/$pagination.phtml";
     }
 
     protected function redirect($route)

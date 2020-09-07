@@ -1,29 +1,33 @@
 <div class="d-flex card-header">
     <h4 class="mr-auto p-2">Usuarios</h4>
-    <div class="p-2"><button type="button" class="btn btn-info">Adicionar</button></div>
+    <div class="p-2"><button type="button" class="btn btn-info"><i class="fas fa-plus-circle"></i> Adicionar</button></div>
 </div>
 
 <div class="card-body">
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">ID</th>
+                <th scope="col" style="width: 30px;">ID</th>
                 <th scope="col">Nome</th>
                 <th scope="col">E-mail</th>
-                <th scope="col" colspan="3">Opções</th>
+                <th scope="col" style="width: 332px;">Opções</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->views->users as $user): ?>
-                <tr>
-                    <th scope="row"><?= $user['id']?></th>
-                    <td><?= $user['name']?></td>
-                    <td><?= $user['email']?></td>
-                    <td><button type="button" class="btn btn-secondary">Visualizar</button></td>
-                    <td><button type="button" class="btn btn-warning">Alterar</button></td>
-                    <td><button type="button" class="btn btn-danger">Excluir</button></td>
-                </tr>
-            <?php endforeach?>
+            <?php if(!empty($this->view->pagination->data)): ?>
+                <?php foreach ($this->view->pagination->data as $user): ?>
+                    <tr>
+                        <th scope="row"><?= $user->id?></th>
+                        <td><?= $user->name?></td>
+                        <td><?= $user->email?></td>
+                        <td>
+                            <button type="button" class="btn btn-secondary"><i class="fas fa-eye"></i> Visualizar</button>
+                            <button type="button" class="btn btn-warning"><i class="fas fa-edit"></i> Alterar</button>
+                            <button type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Excluir</button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>

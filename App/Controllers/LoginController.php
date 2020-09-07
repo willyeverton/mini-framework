@@ -22,7 +22,7 @@ class LoginController extends Controller
                 $this->setSessionLogged();
                 $this->redirect("/dashboard");
             } else {
-                @ $this->views->message = "E-mail ou Senha Incorreto!";
+                $this->view->message = "E-mail ou Senha Incorreto!";
             }
         }
         $this->render("login", '');

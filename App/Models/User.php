@@ -13,4 +13,9 @@ class User extends Model
         'active',
         'admin',
     ];
+
+    public function seller()
+    {
+        return true;
+    }
 }
