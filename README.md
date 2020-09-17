@@ -1,3 +1,5 @@
-# Mini Framework MVC PHP
-Mini Framework PHP com Models, Views e Controllers. 
-E acesso dinâmico com rotas.
+# Mini Framework MVC
+
+Dashboard em mini Framework PHP.
+
+- Models, View, Controller e Rotas dinamicas.
